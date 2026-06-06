@@ -1,0 +1,389 @@
+---
+const steps = [
+  {
+    number: '01',
+    title: 'Discovery',
+    description: 'Antes de abrir o Figma, preciso entender o problema com dados. Funil no GA4, escuta de ligações, mapeamento da jornada real.',
+    tools: ['GA4', 'Power BI'],
+    side: 'left' as const,
+  },
+  {
+    number: '02',
+    title: 'Business Case',
+    description: 'Cada iniciativa precisa de dimensão de impacto. Se não tem número que justifica, não tem como priorizar.',
+    tools: ['Excel', 'Power BI'],
+    side: 'right' as const,
+  },
+  {
+    number: '03',
+    title: 'Design',
+    description: 'Fluxos, protótipos, telas. Omnichannel: app, WhatsApp, URA — a solução se adapta ao canal, não o contrário.',
+    tools: ['Figma'],
+    side: 'left' as const,
+  },
+  {
+    number: '04',
+    title: 'Tagueamento',
+    description: 'Se não dá pra medir, não dá pra saber se resolveu. Cada decisão de design tem um ponto de medição desde o início.',
+    tools: ['GTM', 'GA4'],
+    side: 'right' as const,
+  },
+  {
+    number: '05',
+    title: 'Validação',
+    description: 'A/B quando faz sentido. Z-test pra significância. Rigor estatístico é o que separa achismo de evidência.',
+    tools: ['GA4', 'Excel'],
+    side: 'left' as const,
+  },
+  {
+    number: '06',
+    title: 'Iteração',
+    description: 'Medir, ajustar, repetir. O indicador se moveu? Quanto? Por quê? O que vem depois?',
+    tools: ['Figma', 'Claude'],
+    side: 'right' as const,
+  },
+];
+
+const allTools = ['Figma', 'GA4', 'Power BI', 'GTM', 'Salesforce', 'Marketing Cloud', 'Excel', 'Claude'];
+---
+
+<div class="wf-wrapper">
+
+  <!-- ── Timeline ────────────────────────────────── -->
+  <div class="wf-timeline" id="wf-timeline">
+
+    <!-- Vertical track (positioned by JS) -->
+    <div class="wf-track" id="wf-track" aria-hidden="true">
+      <div class="wf-track-fill" id="wf-track-fill"></div>
+      <div class="wf-track-cursor" id="wf-track-cursor"></div>
+    </div>
+
+    <!-- Steps -->
+    {steps.map((step, i) => (
+      <div class={`wf-step wf-step--${step.side}`} data-index={i}>
+
+        <!-- Card slot (left or right depending on side) -->
+        <div class="wf-card-slot">
+          <div class="wf-card" data-side={step.side} id={`wf-card-${i}`}>
+            <span class="wf-num">{step.number}</span>
+            <h3 class="wf-title">{step.title}</h3>
+            <p class="wf-desc">{step.description}</p>
+            <p class="wf-tools">{step.tools.join(' · ')}</p>
+          </div>
+        </div>
+
+        <!-- Circle on the line -->
+        <div class="wf-node-col">
+          <div class="wf-node" id={`wf-node-${i}`}></div>
+        </div>
+
+        <!-- Empty opposing slot -->
+        <div class="wf-empty-slot"></div>
+
+      </div>
+    ))}
+  </div>
+
+  <!-- ── Tools grid ─────────────────────────────── -->
+  <div class="wf-tools-grid">
+    {allTools.map(tool => (
+      <span class="wf-tool-pill">{tool}</span>
+    ))}
+  </div>
+
+</div>
+
+<style>
+/* ── Wrapper ──────────────────────────────────── */
+.wf-wrapper {
+  margin: 0;
+}
+
+/* ── Timeline container ───────────────────────── */
+.wf-timeline {
+  position: relative;
+}
+
+/* ── Vertical track ───────────────────────────── */
+.wf-track {
+  position: absolute;
+  left: calc(50% - 0.5px);
+  top: 0;
+  height: 0;
+  width: 1px;
+  background: var(--color-border);
+  display: none; /* shown by JS after measuring */
+}
+
+.wf-track-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: var(--color-accent);
+}
+
+.wf-track-cursor {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+/* ── Step row ────────────────────────────────── */
+.wf-step {
+  display: grid;
+  grid-template-columns: 1fr 32px 1fr;
+  column-gap: 32px;
+  align-items: center;
+  padding: 40px 0;
+}
+
+.wf-step--left  { grid-template-areas: "card center empty"; }
+.wf-step--right { grid-template-areas: "empty center card"; }
+
+.wf-card-slot   { grid-area: card;   }
+.wf-node-col    { grid-area: center; display: flex; justify-content: center; align-items: center; }
+.wf-empty-slot  { grid-area: empty;  }
+
+.wf-step--left  .wf-card-slot { display: flex; justify-content: flex-end; }
+.wf-step--right .wf-card-slot { display: flex; justify-content: flex-start; }
+
+/* ── Card ────────────────────────────────────── */
+.wf-card {
+  max-width: 280px;
+  opacity: 0.35;
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+
+.wf-card[data-side="left"]  { transform: translateX(16px) scale(0.96); text-align: right; }
+.wf-card[data-side="right"] { transform: translateX(-16px) scale(0.96); text-align: left; }
+
+.wf-card.is-visible { opacity: 1; transform: translateX(0) scale(1); }
+
+.wf-card.is-visible:hover {
+  transform: scale(1.04);
+  transition: transform 250ms ease;
+}
+
+/* ── Card content ────────────────────────────── */
+.wf-num {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.wf-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--color-text);
+  line-height: 1.15;
+  margin: 0 0 8px 0;
+}
+
+.wf-desc {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+  margin: 0 0 10px 0;
+}
+
+.wf-tools {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+  margin: 0;
+}
+
+/* ── Circle node ──────────────────────────────── */
+.wf-node {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-bg);
+  flex-shrink: 0;
+  opacity: 0.3;
+  transition: border-color 300ms ease, background-color 300ms ease, opacity 300ms ease;
+  position: relative;
+  z-index: 1;
+}
+
+.wf-node.is-active {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  opacity: 1;
+}
+
+/* ── Tools pills grid ─────────────────────────── */
+.wf-tools-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 3rem;
+  padding-top: 3rem;
+  border-top: 0.5px solid var(--color-border);
+}
+
+.wf-tool-pill {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 12px;
+  border: 0.5px solid var(--color-border);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--color-text-muted);
+  transition: background-color 150ms ease;
+  cursor: default;
+  user-select: none;
+}
+
+.wf-tool-pill:hover {
+  background: var(--color-surface);
+}
+
+/* ── Mobile (< 768px) ────────────────────────── */
+@media (max-width: 767px) {
+  .wf-step {
+    grid-template-columns: 32px 1fr;
+    grid-template-areas: "center card" !important;
+    column-gap: 20px;
+    padding: 28px 0;
+  }
+
+  .wf-empty-slot { display: none; }
+
+  .wf-step--left  .wf-card-slot,
+  .wf-step--right .wf-card-slot {
+    display: block;
+    justify-content: initial;
+  }
+
+  .wf-card {
+    max-width: 100%;
+    text-align: left !important;
+    /* Start fully visible — no entrance animation on mobile */
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .wf-card[data-side="left"],
+  .wf-card[data-side="right"] {
+    transform: none !important;
+  }
+
+  .wf-card.is-visible:hover {
+    transform: none !important;
+  }
+
+  /* Hide the scroll-cursor dot on mobile */
+  .wf-track-cursor {
+    display: none;
+  }
+
+  .wf-track {
+    left: 15.5px; /* center of 32px column */
+  }
+}
+</style>
+
+<script>
+  (function () {
+    const timeline = document.getElementById('wf-timeline');
+    const track    = document.getElementById('wf-track');
+    const fill     = document.getElementById('wf-track-fill');
+    const cursor   = document.getElementById('wf-track-cursor');
+    if (!timeline || !track || !fill || !cursor) return;
+
+    const nodes = Array.from(
+      timeline.querySelectorAll<HTMLElement>('.wf-node')
+    );
+    const cards = Array.from(
+      timeline.querySelectorAll<HTMLElement>('.wf-card')
+    );
+
+    // ── Card entrance (IntersectionObserver) ─────────────────────────
+    const cardObs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            (e.target as HTMLElement).classList.add('is-visible');
+            cardObs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+    cards.forEach(c => cardObs.observe(c));
+
+    // ── Line measurement ──────────────────────────────────────────────
+    let nodeOffsets: number[] = [];
+    let lineTop = 0;
+    let lineH   = 0;
+
+    function measure() {
+      const tlTop = timeline.getBoundingClientRect().top + window.scrollY;
+      nodeOffsets = nodes.map(n => {
+        const r = n.getBoundingClientRect();
+        return r.top + window.scrollY - tlTop + r.height / 2;
+      });
+      if (nodeOffsets.length < 2) return;
+
+      lineTop = nodeOffsets[0];
+      lineH   = nodeOffsets[nodeOffsets.length - 1] - lineTop;
+
+      track.style.top    = lineTop + 'px';
+      track.style.height = lineH   + 'px';
+      track.style.display = 'block';
+    }
+
+    // ── Scroll update (rAF-throttled) ─────────────────────────────────
+    function update() {
+      if (lineH === 0) return;
+
+      const tlRect = timeline.getBoundingClientRect();
+      const midY   = window.innerHeight * 0.55;
+
+      // How far the viewport mid has traveled past the first node
+      const traveled = midY - (tlRect.top + lineTop);
+      const progress = Math.max(0, Math.min(1, traveled / lineH));
+      const fillPx   = progress * lineH;
+
+      fill.style.height  = fillPx + 'px';
+      cursor.style.top   = fillPx + 'px';
+      cursor.style.opacity = (progress > 0 && progress < 1) ? '1' : '0';
+
+      // Activate nodes the fill has reached
+      nodeOffsets.forEach((offset, i) => {
+        const rel = offset - lineTop;
+        nodes[i].classList.toggle('is-active', fillPx >= rel);
+      });
+    }
+
+    let raf = 0;
+    function onScroll() {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = 0; update(); });
+    }
+
+    measure();
+    update();
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', () => { measure(); update(); }, { passive: true });
+  })();
+</script>
+

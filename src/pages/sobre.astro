@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import WorkflowTimeline from '../components/WorkflowTimeline.astro';
+---
+
+<BaseLayout title="Sobre" description="Sobre Renan Berdoldi — Lead Product Designer">
+  <div class="mx-auto max-w-3xl px-6 py-16">
+
+    <h1
+      class="mb-12 font-display font-normal leading-[1.05] tracking-[-0.02em] text-primary"
+      style="font-size: clamp(2.25rem, 4vw, 3rem)"
+    >
+      Sobre
+    </h1>
+
+    <!-- ── Intro ──────────────────────────────── -->
+    <div class="space-y-5 leading-[1.65] text-muted" style="font-size: clamp(1.0625rem, 1.5vw, 1.125rem)">
+      <p>
+        Comecei em design gráfico. Durante quase uma década, meu trabalho era visual — marcas, peças, layouts. Funcionava, mas faltava algo: eu entregava um arquivo final e não sabia o que acontecia depois. Não sabia se alguém usava, se resolvia alguma coisa, se movia algum número.
+      </p>
+      <p>
+        A virada veio quando migrei pra produto. Primeiro como UI Designer, depois como Product Designer na Badaró, uma agência que me alocou num cliente de telecom — a Oi, uma das maiores operadoras da América do Sul. Era pra ser um projeto. Virou o setor onde construí carreira.
+      </p>
+      <p>
+        Telecom não foi escolha deliberada. Foi circunstância que virou vocação. Descobri que gosto de problemas com escala real: milhares de ligações por dia, instalações que falham por causa de uma tela mal pensada, clientes que desistem porque ninguém desenhou o caminho entre a compra e a internet funcionando. É o tipo de problema onde design ruim custa dinheiro de verdade — e design bom aparece no resultado do mês seguinte.
+      </p>
+      <p>
+        Hoje sou Lead Product Designer na Nio Internet, ISP de fibra do grupo BTG Pactual. Lidero design nos squads de Onboarding e Uso & Relacionamento, com escopo omnichannel: app, WhatsApp e URA. Meu trabalho não é fazer tela — é decidir o que construir, medir se funcionou, e iterar até o indicador se mover.
+      </p>
+    </div>
+
+    <!-- ── Como eu trabalho + Ferramentas (componente) ── -->
+    <div class="mt-16">
+      <h2
+        class="font-display font-normal text-primary leading-[1.1] tracking-[-0.02em] mb-12"
+        style="font-size: clamp(1.5rem, 3vw, 2rem)"
+      >
+        Como eu trabalho
+      </h2>
+      <WorkflowTimeline />
+    </div>
+
+    <!-- ── Fora do trabalho ───────────────────────── -->
+    <div class="mt-16">
+      <h2
+        class="font-display font-normal text-primary leading-[1.1] tracking-[-0.02em] mb-6"
+        style="font-size: clamp(1.5rem, 3vw, 2rem)"
+      >
+        Fora do trabalho
+      </h2>
+      <div class="leading-[1.65] text-muted" style="font-size: clamp(1.0625rem, 1.5vw, 1.125rem)">
+        <p>
+          Futebol, física, filosofia e ciência em geral. Gosto de entender como as coisas funcionam — dentro e fora de uma tela. Talvez isso explique a obsessão por discovery antes de execução: a mesma curiosidade que me puxa pra entender um modelo físico é a que me faz ouvir 23 gravações de call center antes de desenhar um fluxo.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── CTAs ──────────────────────────────────── -->
+    <div class="mt-14 flex flex-wrap gap-3">
+      <a href="mailto:renanberdoldi@gmail.com" class="btn">
+        Entrar em contato
+      </a>
+      <a
+        href="https://linkedin.com/in/renanberdoldi"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn"
+      >
+        LinkedIn <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-left:6px;"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+
+  </div>
+</BaseLayout>
+

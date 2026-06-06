@@ -1,0 +1,52 @@
+---
+// TODO: Efeito de letras embaralhando em títulos (scramble text) foi considerado mas não implementado ainda.
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BackToTop from '../components/BackToTop.astro';
+import CursorOrbit from '../components/CursorOrbit.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Portfolio de Renan Berdoldi — Lead Product Designer' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <script>
+      (function(){
+        var t=localStorage.getItem('theme');
+        if(t){document.documentElement.setAttribute('data-theme',t);}
+        else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches){
+          document.documentElement.setAttribute('data-theme','dark');
+        }
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500&display=swap"
+    />
+    <title>{title} — Renan Berdoldi</title>
+  </head>
+  <body class="bg-bg text-primary font-body antialiased">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <BackToTop />
+    <CursorOrbit />
+    <ScrollReveal />
+  </body>
+</html>
+

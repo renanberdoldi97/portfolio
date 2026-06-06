@@ -1,0 +1,264 @@
+---
+import { getCollection } from 'astro:content';
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/#trabalho', label: 'Cases' },
+  { href: '/sobre', label: 'Sobre' },
+];
+
+const currentPath = Astro.url.pathname;
+
+const allCases = await getCollection('cases', ({ data }) => !data.draft);
+allCases.sort((a, b) => (a.data.caseNumber ?? '99').localeCompare(b.data.caseNumber ?? '99'));
+---
+
+<header id="site-header" class="sticky top-0 z-50 w-full border-b border-transparent bg-transparent">
+  <nav class="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
+    <a href="/" class="text-sm font-medium text-primary hover:text-muted transition-colors">
+      Renan Berdoldi
+    </a>
+
+    <div class="flex items-center gap-6">
+      <ul class="flex items-center gap-6">
+        {navLinks.map(link => (
+          <li class={link.label === 'Cases' ? 'cases-menu' : ''}>
+
+            {/* Non-Cases links: normal, always visible */}
+            {link.label !== 'Cases' && (
+              <a
+                href={link.href}
+                class={`text-sm transition-colors hover:underline underline-offset-4 decoration-1 ${
+                  currentPath === link.href ? 'text-primary' : 'text-muted'
+                }`}
+              >
+                {link.label}
+              </a>
+            )}
+
+            {/* Cases — desktop link (hover triggers CSS dropdown) */}
+            {link.label === 'Cases' && (
+              <a
+                href={link.href}
+                class={`hidden md:inline text-sm transition-colors hover:underline underline-offset-4 decoration-1 ${
+                  currentPath === link.href ? 'text-primary' : 'text-muted'
+                }`}
+              >
+                Cases
+              </a>
+            )}
+
+            {/* Cases — mobile toggle button */}
+            {link.label === 'Cases' && (
+              <button
+                id="cases-mobile-toggle"
+                class="cases-mobile-toggle md:hidden"
+                aria-expanded="false"
+                aria-controls="cases-mobile-panel"
+              >
+                Cases
+                <svg
+                  id="cases-chevron"
+                  class="cases-chevron"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </button>
+            )}
+
+            {/* Desktop dropdown (CSS hover, position absolute) */}
+            {link.label === 'Cases' && (
+              <div class="cases-dropdown" role="menu" aria-label="Navegação de cases">
+                {allCases.map(c => (
+                  <a
+                    href={`/cases/${c.id}`}
+                    class="case-preview-card"
+                    role="menuitem"
+                  >
+                    <div class="case-info">
+                      <span class="case-preview-title">{c.data.title}</span>
+                      <span class="case-preview-desc">{c.data.description}</span>
+                      <span class="case-preview-metric">{c.data.metric} {c.data.metricLabel}</span>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+
+          </li>
+        ))}
+      </ul>
+
+      <!-- Theme toggle -->
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar modo escuro/claro">
+        <svg id="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg id="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+
+      <!-- Avatar + social dropdown -->
+      <div class="social-cluster">
+        <div class="avatar-btn">
+          <img src="/images/Avatar.jpg" alt="Renan Berdoldi" width="32" height="32" />
+        </div>
+        <div class="social-dropdown">
+          <a href="https://linkedin.com/in/renanberdoldi" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+              <rect x="2" y="9" width="4" height="12"/>
+              <circle cx="4" cy="4" r="2"/>
+            </svg>
+          </a>
+          <a href="https://www.instagram.com/renanberdoldi" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+          </a>
+          <a href="https://www.behance.net/doldi" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Behance">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 6v12"/>
+              <path d="M4 6h5a3 3 0 0 1 0 6H4"/>
+              <path d="M4 12h5.5a3.5 3.5 0 0 1 0 7H4"/>
+              <path d="M14 8h6"/>
+              <circle cx="17" cy="15.5" r="3.5"/>
+              <path d="M13.5 15.5h7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Cases panel (expands the sticky header below the nav bar) -->
+  <div id="cases-mobile-panel" class="cases-mobile-panel" aria-hidden="true">
+    <div class="mx-auto max-w-4xl px-6 pt-3 pb-2">
+
+      <!-- Top row: label + close button -->
+      <div class="flex items-center justify-between mb-2">
+        <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">Cases</span>
+        <button id="cases-panel-close" class="cases-panel-close" aria-label="Fechar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Case preview cards (vertical column) -->
+      <div class="flex flex-col">
+        {allCases.map(c => (
+          <a href={`/cases/${c.id}`} class="case-preview-card">
+            <div class="case-info">
+              <span class="case-preview-title">{c.data.title}</span>
+              <span class="case-preview-desc">{c.data.description}</span>
+              <span class="case-preview-metric">{c.data.metric} {c.data.metricLabel}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <!-- Ver todos -->
+      <div class="border-t border-border mt-2 pt-4 pb-3 flex justify-center">
+        <button
+          id="cases-see-all"
+          class="font-mono text-[13px] uppercase tracking-[0.08em] text-accent flex items-center gap-2 bg-transparent border-0 cursor-pointer p-0"
+        >
+          Ver todos
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+<script>
+  const header       = document.getElementById('site-header');
+  const mobileToggle = document.getElementById('cases-mobile-toggle');
+  const mobilePanel  = document.getElementById('cases-mobile-panel');
+  const chevronIcon  = document.getElementById('cases-chevron');
+  const closeBtn     = document.getElementById('cases-panel-close');
+  const seeAllBtn    = document.getElementById('cases-see-all');
+
+  // Panel toggle — CSS controls visibility (display:none on desktop),
+  // so these listeners are harmless on desktop even when always registered.
+  function openCasesPanel() {
+    mobilePanel?.classList.add('is-open');
+    mobilePanel?.setAttribute('aria-hidden', 'false');
+    chevronIcon?.classList.add('is-open');
+    mobileToggle?.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeCasesPanel() {
+    mobilePanel?.classList.remove('is-open');
+    mobilePanel?.setAttribute('aria-hidden', 'true');
+    chevronIcon?.classList.remove('is-open');
+    mobileToggle?.setAttribute('aria-expanded', 'false');
+  }
+
+  mobileToggle?.addEventListener('click', () => {
+    const isOpen = mobilePanel?.classList.contains('is-open');
+    isOpen ? closeCasesPanel() : openCasesPanel();
+  });
+
+  closeBtn?.addEventListener('click', closeCasesPanel);
+
+  seeAllBtn?.addEventListener('click', () => {
+    closeCasesPanel();
+    document.getElementById('trabalho')?.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // Close when tapping outside the header
+  document.addEventListener('click', (e) => {
+    if (header && !header.contains(e.target as Node)) {
+      closeCasesPanel();
+    }
+  });
+
+  // ── Header scroll effect ──────────────────────────────────────────────
+  const update = () => {
+    if (window.scrollY > 24) {
+      header?.classList.add('is-scrolled');
+    } else {
+      header?.classList.remove('is-scrolled');
+    }
+  };
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+
+  // ── Theme toggle ──────────────────────────────────────────────────────
+  const themeToggle = document.getElementById('theme-toggle');
+  themeToggle?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+
+    document.documentElement.classList.add('theme-transitioning');
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+
+    setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 250);
+  });
+</script>

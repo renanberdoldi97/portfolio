@@ -1,0 +1,156 @@
+---
+// No server-side props — all logic reads the DOM client-side
+---
+
+<div
+  id="case-stepper"
+  class="fixed right-6 top-1/2 z-30 -translate-y-1/2 hidden md:flex flex-col gap-4 items-end"
+  role="navigation"
+  aria-label="Seções do case"
+>
+  <!-- Built by the script below -->
+</div>
+
+<script>
+  (function () {
+    const stepper = document.getElementById('case-stepper');
+    if (!stepper) return;
+
+    const caseBody = document.querySelector<HTMLElement>('.case-body');
+    if (!caseBody) return;
+
+    const headings = Array.from(caseBody.querySelectorAll<HTMLElement>('h2'));
+    if (headings.length < 2) return;
+
+    // Give every h2 a stable id so we can scroll to it
+    headings.forEach((el, i) => {
+      if (!el.id) el.id = `cs-${i}`;
+    });
+
+    let isHovered = false;
+    let activeIndex = 0;
+
+    // Build one button per heading
+    const stepEls = headings.map((el) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('aria-label', `Ir para: ${el.textContent?.trim() ?? ''}`);
+      btn.style.cssText =
+        'display:flex;align-items:center;gap:12px;' +
+        'cursor:pointer;background:none;border:none;padding:4px 0;';
+
+      const label = document.createElement('span');
+      label.style.cssText =
+        "font-family:'Geist Mono Variable',ui-monospace,monospace;" +
+        'font-size:11px;font-weight:500;' +
+        'color:var(--color-primary);opacity:0;' +
+        'text-align:right;max-width:180px;line-height:1.3;' +
+        'transition:opacity 0.2s ease,color 0.2s ease;' +
+        'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+      label.textContent = el.textContent?.trim() ?? '';
+
+      const dash = document.createElement('span');
+      dash.style.cssText =
+        'display:block;width:24px;height:1px;flex-shrink:0;' +
+        'background-color:var(--color-primary);opacity:0.2;' +
+        'transition:opacity 0.2s ease,background-color 0.2s ease;';
+
+      btn.appendChild(label);
+      btn.appendChild(dash);
+      btn.addEventListener('click', () =>
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      );
+      stepper.appendChild(btn);
+
+      return { label, dash };
+    });
+
+    function applyStates() {
+      stepEls.forEach(({ label, dash }, i) => {
+        const active = i === activeIndex;
+
+        if (isHovered) {
+          label.style.opacity = '1';
+          label.style.color = active ? 'var(--color-accent)' : 'var(--color-primary)';
+          label.style.fontWeight = active ? '700' : '500';
+          dash.style.opacity = active ? '1' : '0.5';
+          dash.style.backgroundColor = active ? 'var(--color-accent)' : 'var(--color-primary)';
+        } else {
+          label.style.opacity = active ? '1' : '0';
+          label.style.color = active ? 'var(--color-accent)' : 'var(--color-primary)';
+          label.style.fontWeight = active ? '700' : '500';
+          dash.style.opacity = active ? '0.9' : '0.2';
+          dash.style.backgroundColor = active ? 'var(--color-accent)' : 'var(--color-primary)';
+        }
+      });
+    }
+
+    stepper.addEventListener('mouseenter', () => { isHovered = true;  applyStates(); });
+    stepper.addEventListener('mouseleave', () => { isHovered = false; applyStates(); });
+
+    // Track which heading is in the upper-middle portion of the viewport
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const idx = headings.indexOf(entry.target as HTMLElement);
+            if (idx !== -1) {
+              activeIndex = idx;
+              applyStates();
+              break;
+            }
+          }
+        }
+      },
+      { rootMargin: '-10% 0px -65% 0px', threshold: 0 }
+    );
+
+    headings.forEach((h) => observer.observe(h));
+    applyStates(); // set initial state
+
+    // ── Bottom-of-page fallback ─────────────────────────────────────────
+    // The last heading's section is often too short to enter the observer's
+    // detection band (-10% / -65%), so it never fires. This scroll listener
+    // takes over when the user reaches the end of the page and yields control
+    // back to the observer as soon as they scroll up.
+
+    let isNearBottom = false;
+    let rafId = 0;
+
+    const checkNearBottom = () => {
+      const nearBottom =
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
+
+      if (nearBottom && !isNearBottom) {
+        isNearBottom = true;
+        activeIndex = headings.length - 1;
+        applyStates();
+      } else if (!nearBottom && isNearBottom) {
+        // Hand control back to the IntersectionObserver; it will update
+        // activeIndex the next time a heading enters the detection band.
+        isNearBottom = false;
+      }
+    };
+
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        checkNearBottom();
+      });
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Cleanup — avoids memory leaks; pagehide is bfcache-safe unlike unload
+    window.addEventListener(
+      'pagehide',
+      () => {
+        window.removeEventListener('scroll', onScroll);
+        if (rafId) cancelAnimationFrame(rafId);
+      },
+      { once: true }
+    );
+  })();
+</script>
+

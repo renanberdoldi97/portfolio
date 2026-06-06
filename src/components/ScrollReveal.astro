@@ -1,0 +1,36 @@
+---
+---
+<script>
+  // No reveal animations on mobile — elements start fully visible
+  if (!window.matchMedia('(max-width: 767px)').matches) {
+    const selectors = [
+      '.case-body h2',
+      '.case-body table',
+      '.case-body img',
+      '.case-body blockquote',
+      '.case-item',
+    ];
+
+    const elements = document.querySelectorAll<HTMLElement>(selectors.join(', '));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter(e => e.isIntersecting);
+        visible.forEach((entry, index) => {
+          const el = entry.target as HTMLElement;
+          setTimeout(() => {
+            el.classList.add('reveal-visible');
+          }, index * 80);
+          observer.unobserve(el);
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    elements.forEach(el => {
+      el.classList.add('reveal');
+      observer.observe(el);
+    });
+  }
+</script>
+

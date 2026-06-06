@@ -1,0 +1,113 @@
+---
+title: "URA resolutiva no onboarding"
+shortTitle: "URA"
+description: "Como construí do zero uma URA resolutiva que reteve 10pp a mais de ligações no canal automatizado — onde antes existia apenas um tubo direto pro atendente."
+subtitle: "Como transformamos um canal sem inteligência em um produto que resolve antes do humano"
+role: "Lead Product Designer · Onboarding · Nio Internet · 2025–2026"
+date: "2024-02-01"
+tags: ["Onboarding", "Voz", "A/B Testing"]
+draft: false
+metric: "−24%"
+metricLabel: "operação humana receptiva"
+caseNumber: "02"
+---
+
+`-24%` na operação humana receptiva. `+10pp` de retenção no canal automatizado. Uma URA que não existia — construída do zero, validada em A/B controlado, e desenhada pra resolver antes de transferir.
+
+---
+
+## Contexto
+
+Quando um cliente da Nio liga durante o período de instalação, ele entra na URA — o sistema de resposta de voz que deveria ser a primeira linha de atendimento. Deveria.
+
+Na prática, a URA de onboarding da Nio não fazia nada. O cliente digitava o CPF, ouvia "fique tranquilo, vou te transferir" e entrava na fila do atendimento humano. Independente do cenário — dúvida sobre agendamento, confirmação de visita, remarcação — o destino era o mesmo: fila de espera, atendente, custo operacional.
+
+O volume era de mais de 600 ligações por dia sobre instalação. 96% dessas ligações tinham intenção de resolver algo relacionado a agendamento. E a resolutividade da URA era zero — benchmark de mercado fica entre 40% e 60%; a Nio estava em 0%. Era um canal sem inteligência: apenas transbordo.
+
+Não era uma URA ruim. Era uma URA que não existia como produto. Era um tubo.
+
+## O ponto de partida
+
+O insight veio de uma observação simples: nos outros canais — WhatsApp, app — nós já resolvíamos parte dessas demandas de forma automatizada. O cliente conseguia confirmar visita, acompanhar status, reagendar. Mas quem ligava, que representava um volume diário expressivo, caía direto no humano sem nenhuma tentativa de resolução.
+
+A pergunta não era "como melhorar a URA". Era "por que esse canal não oferece o que os outros já oferecem?".
+
+Mapeei o volume, validei o custo com o time de operações e construí o business case que dimensionava a oportunidade. A maior fatia das ligações — quase 78% — vinha de clientes com pedido liberado pra instalação. Era o grupo com maior potencial de resolutividade automática: confirmar agenda, informar janela de horário, lembrar documentação. Coisas que não precisam de humano.
+
+## A hipótese
+
+Se o cliente que liga durante a instalação recebe opções funcionais na URA — confirmar agendamento, ouvir status, resolver pendências — uma parcela relevante dessas ligações pode ser resolvida sem transferência pro humano.
+
+Não estávamos falando de um menu reorganizado. Estávamos falando de criar funcionalidade onde não existia nenhuma. E o approach foi faseado: em vez de construir tudo de uma vez, priorizei por impacto e viabilidade técnica.
+
+## O que construí
+
+Desenhei uma URA resolutiva inteira, do zero. A árvore foi estruturada pra identificar o contexto do cliente (pedido agendado ou pendenciado) e oferecer ações reais:
+
+- Confirmar agendamento: o cliente ouve data e janela de horário e confirma direto na URA
+- Reagendar: três opções de data disponíveis
+- Status do técnico: "já saiu, fica de olho no WhatsApp"
+- Lembrete de documentação: "não esquece o RG"
+- Transferência pro humano quando o caso é complexo demais pra automação
+
+![As-is: URA sem inteligência — cliente entra e vai direto pro atendente](/images/cases/ura/URA_Onboarding_-_antes.jpg)
+
+<img src="/images/cases/ura/URA_Onboarding.jpg" alt="To-be: URA resolutiva com árvore de decisão completa" class="case-image-full" />
+
+O rollout foi planejado em fases de desenvolvimento. A primeira entrega foi a vocalização do agendamento — MVP mínimo pra validar a tese de que o canal podia reter ligações. As fases seguintes adicionariam vocalização de pendenciamento, status de execução do serviço e reagendamento.
+
+## Como validamos
+
+Rodamos um A/B controlado com split de 50% do tráfego total:
+
+- **Grupo controle:** URA original — cliente ouvia a vocalização genérica e ia direto pro atendente (contenção 0%)
+- **Grupo piloto:** URA nova — cliente ouvia as opções funcionais antes de qualquer transferência
+
+A divisão era aleatória: metade de todo cliente que ligava com instalação pendente entrava no piloto. Isso eliminava viés de horário, perfil ou tipo de demanda.
+
+Dentro do grupo piloto, dos clientes com pedido agendado, 27% chegaram na vocalização do agendamento. Desses, 5,7% confirmaram o agendamento direto na URA — sem falar com ninguém. Outros 15% ainda pediram atendente, e 4% desligaram sem confirmar (mas potencialmente motivados pela informação que já tinham recebido).
+
+## Resultados
+
+O piloto reteve `57,3%` das ligações na URA, contra `47,9%` do grupo controle — um ganho de `+10pp` de retenção no canal automatizado.
+
+Na prática, isso significou `-24%` na operação humana receptiva: um quarto das ligações que antes caíam direto no atendente passaram a ser resolvidas no próprio canal.
+
+No grupo de pendenciamento, o resultado foi ainda mais expressivo: a vocalização de pendência salvou 9,8% das ligações desse segmento. O grupo controle, sem nenhuma funcionalidade, salvou 0% — porque a comparação é entre ter e não ter, não entre versões.
+
+| Métrica | Controle | Piloto |
+|---|---|---|
+| Retidos na URA | 47,9% | 57,3% |
+| Diferença | — | +10pp |
+
+## O que o número não conta
+
+O dado mais revelador do diagnóstico não veio do A/B. Veio antes: cerca de 45% dos clientes que ligavam tinham algum pendenciamento. Ou seja, a maioria não ligava pra confirmar — ligava porque algo estava travado. E a URA antiga simplesmente jogava todo mundo na mesma fila.
+
+A URA nova começou a separar esses fluxos. Quem tinha agendamento confirmado recebia informação e resolvia. Quem tinha pendência era notificado e orientado. A comparação não é "URA boa vs. URA ruim" — é "canal resolutivo vs. canal que não existia".
+
+O outro dado de segundo nível: de quem já tinha agendamento, a maioria queria reagendar. Isso validou que reagendamento deveria ser a funcionalidade de maior prioridade nas fases seguintes — não por suposição, mas por dado de comportamento real na árvore.
+
+## Impacto sistêmico
+
+O business case mapeou o impacto esperado da URA resolutiva em quatro métricas do onboarding, não só no canal de voz:
+
+| Métrica | Baseline | Meta |
+|---|---|---|
+| Confirmação de visita | 59% | 80% |
+| Contact rate operação | 18% | 10% |
+| Eficácia de instalação | 71% | 80% |
+| Cancelamento de vendas | 26% | 17% |
+
+A tese é que uma URA que confirma agendamento ativamente reduz casa fechada; uma que resolve sem transferir reduz contact rate; uma que vocaliza itens essenciais melhora eficácia da visita. Cada funcionalidade da árvore foi desenhada conectada a uma dessas alavancas — não como feature isolada.
+
+## Próximos passos
+
+A vocalização de agendamento validou o modelo. O roadmap de desenvolvimento continua com as fases seguintes: vocalização de pendenciamento, status de execução do serviço e reagendamento por voz.
+
+O próximo movimento maior é a URA de Suporte — opção 2 do menu principal, que concentra um volume de chamadas significativamente maior que a de instalação. A intenção é replicar a mesma metodologia: discovery antes de execução, entender o que o cliente realmente precisa quando liga pra suporte técnico, e construir funcionalidades que resolvam antes de transferir.
+
+## Time
+
+Eu como Lead Product Designer e a Especialista de Jornada de Onboarding compomos o núcleo da iniciativa, com apoio dos times de Plataforma Conversacional (URA), Operações e Desenvolvimento.
+

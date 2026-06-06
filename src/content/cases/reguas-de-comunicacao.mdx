@@ -1,0 +1,153 @@
+---
+title: "Comunicação na jornada de instalação"
+shortTitle: "Réguas"
+description: "Como estruturei um sistema de comunicação omnichannel que levou a confirmação de visita de instalação de 55,6% para 67,9% em seis meses."
+tags: ["Onboarding", "WhatsApp", "App", "Voz"]
+draft: false
+metric: "+12,3pp"
+metricLabel: "confirmação de visita"
+caseNumber: "01"
+---
+
+Como transformamos a confirmação de visita de instalação em um sistema de comunicação omnichannel
+
+Lead Product Designer · Onboarding · Nio Internet · 2025–2026
+
+<span class="font-mono text-accent">+12,3pp</span> na confirmação de visita em seis meses, com a régua que liderei desde o desenho do conteúdo até o rollout.
+
+---
+
+## Contexto
+
+A Nio é uma operadora de fibra óptica brasileira. Entre o momento em que o cliente compra o plano e o momento em que a internet entra em funcionamento existe uma jornada que dura, em média, alguns dias — e que envolve agendamento, deslocamento de técnico, pendências documentais ou de endereço, e a visita propriamente dita.
+
+Tudo o que acontece nessa janela impacta diretamente o negócio: visita improdutiva custa deslocamento, remarcação custa slot operacional, e uma instalação que demora demais é o maior preditor de cancelamento antes mesmo do cliente virar cliente ativo. Onboarding não é "pós-venda". É o último filtro antes do churn.
+
+## O ponto de partida
+
+O OKR chegou direto:
+
+> Aumentar a confirmação de visita de instalação de 55,6% para 80%.
+
+Não foi um problema que descobrimos em discovery. Foi uma meta que recebemos com baseline e teto. O caminho era nosso.
+
+Confirmação de visita parece uma métrica de UX — e é. Mas ela é também um proxy operacional de altíssimo valor: quando o cliente confirma, a operação sabe que o técnico não vai pra casa fechada, sabe que o slot não vai virar visita improdutiva, e sabe que o ciclo de instalação não vai estourar. Mover esse indicador move toda a cadeia.
+
+## A hipótese
+
+A jornada já tinha mensagens transacionais soltas — pedido criado, técnico a caminho, instalação confirmada — mas não tinha comunicação ativa: nenhum momento em que o sistema chamava o cliente pra agir antes da visita acontecer.
+
+Nossa hipótese era simples: uma régua de comunicação no canal certo, no momento certo, com a mensagem certa, e com resposta possível, moveria o indicador.
+
+A PM conduziu a priorização, definindo que canal abrir primeiro (WhatsApp) e em qual etapa começar (D-1 do agendamento). A especialista de jornada mapeou as dependências de processo e os gatilhos técnicos. Eu desenhei o que o cliente recebia, o que ele podia responder, e o que aconteceria se ele respondesse qualquer coisa fora do esperado.
+
+> Cada decisão dessas é o que separa uma régua de uma notificação.
+
+## A primeira régua: Confirmação
+
+A régua de Confirmação dispara em dois momentos: D-1 do agendamento (parametrizado por turno: manhã às 8h, tarde às 14h) e D0 caso o cliente ainda não tenha confirmado. Cada disparo é um HSM no WhatsApp com duas ações primárias: Confirmar visita e Reagendar.
+
+Três decisões de design sustentam essa régua, e cada uma delas resolve um problema que mensagens transacionais comuns deixam aberto:
+
+**Parametrização por horário do agendamento.** O disparo D-1 manhã vai às 8h. O D-1 tarde vai às 14h. O D0 dispara às 8h. Isso não é detalhe técnico: é reconhecer que o cliente que tem visita às 8h da manhã não pode ser notificado às 9h da noite do dia anterior, porque a janela de ação dele já passou. Cada cliente recebe a mensagem no horário em que ela ainda pode ser respondida.
+
+**Interpretação de intenção em texto livre.** O cliente pode confirmar apertando o botão "Confirmar visita". Mas também pode responder "tá bom", "pode confirmar", "beleza", "eu confirmo", "combinado". Ou pode pedir reagendamento escrevendo "não consigo mais", "preciso mudar", "quero outra data". Todos esses casos são interpretados como confirmação ou reagendamento — sem precisar que o cliente entenda que existe um botão a ser apertado. Isso reduz o transbordo pra atendimento humano e respeita como o brasileiro real conversa em WhatsApp.
+
+**Tratamento de erro com estado preservado.** Se o sistema falhar tecnicamente no momento da confirmação ou do reagendamento, a régua não some. Ela retorna mensagem clara reconhecendo a falha, mantém o agendamento original intacto, e oferece tentar novamente ou conversar com atendente. Erro técnico nunca compromete o estado da instalação.
+
+A régua também cobre o cenário inverso: se há slot disponível antes da data agendada, dispara uma proposta de antecipação. O cliente pode escolher antecipar, e o sistema valida em tempo real se o slot ainda está disponível depois da escolha. Se não estiver mais, mensagem específica reconhece e mantém o agendamento original. Se estiver, confirma a antecipação e abre tracking no app.
+
+![Três HSMs da régua de Confirmação no WhatsApp: oferta de antecipação, confirmação de visita e lembrete no dia anterior, com variáveis de template visíveis](/images/cases/reguas/hsms-template.jpg)
+
+## Primeiros resultados — e a primeira iteração
+
+Entre novembro/25 e março/26, a régua entregou ganho consistente mas modesto:
+
+| Mês | Confirmação |
+|---|---|
+| Nov/25 | 55,6% |
+| Dez/25 | 59,4% |
+| Jan/26 | 61,8% |
+| Fev/26 | 60,0% |
+| Mar/26 | 61,4% |
+
+Boa entrega. Não era o suficiente.
+
+Em análise conjunta com PM e especialista de jornada, identificamos um padrão: o disparo ia apenas pro primeiro contato cadastrado do cliente. Mas a base tinha, em muitos casos, dois contatos: o número do titular e o número usado durante a venda — frequentemente diferentes, frequentemente o segundo era o do dia a dia.
+
+Hipótese: disparar pros dois contatos simultaneamente quando ambos estivessem cadastrados.
+
+A implementação subiu em abril. O salto foi imediato:
+
+| Mês | Confirmação | Δ |
+|---|---|---|
+| Mar/26 | 61,4% | — |
+| Abr/26 | 65,5% | +4,1pp |
+
+> A primeira versão entregou. Mas o dado mostrou que ainda dava pra melhorar. Iterar é parte do desenho, não conserto do desenho.
+
+## Como minimizamos risco no rollout
+
+Quando uma régua afeta confirmação de visita, qualquer efeito não previsto vira problema operacional rápido — técnico despachado em horário errado, slot reagendado por erro, transbordo de atendimento.
+
+Então, em vez de subir 100% de uma vez, planejamos rollout em quatro ondas com leitura entre cada uma:
+
+- **27/04:** 10% dos agendamentos
+- **30/04:** +33%
+- **04/05:** +57%
+- **Maio/26:** 100%
+
+Cada onda dava 2 a 4 dias de leitura. Se algum indicador apontasse efeito adverso — taxa de erro acima do esperado, aumento de transbordo, recontato em volume — a régua podia ser desligada na onda seguinte sem impactar a base completa.
+
+Nenhuma onda exigiu reversão. Em maio, com a régua a 100%, a confirmação chegou a 67,9% — o maior patamar histórico da Nio.
+
+> Big-bang era opção. Rollout controlado custou tempo, mas comprou confiança no resultado final. Cautela é parte do desenho.
+
+## Confirmação não é a única régua. É a primeira do sistema.
+
+Confirmação resolve um momento: a janela entre agendamento e visita. Mas a jornada de instalação tem outras janelas onde a comunicação ativa muda o resultado — pendência documental, mudança de slot, dia da visita, deslocamento do técnico, atraso, falha.
+
+A partir de Confirmação, expandimos o sistema cobrindo essas janelas. Cada nova régua segue os mesmos princípios da primeira: parametrizada por momento, interpretação de intenção em texto livre, tratamento de erro com estado preservado, rollout controlado.
+
+| Régua | Canal | Quando dispara | Status |
+|---|---|---|---|
+| Confirmação | WhatsApp | D-1 e D0 do agendamento | Em produção |
+| Antecipação | WhatsApp | Quando slot abre antes da data | Em produção |
+| Gestão de Pendência | WhatsApp | OS entra em pendência documental | Piloto regional BA+SC com +8pp delta vs controle |
+| Validação de Pendência | WhatsApp | Antes de pendência virar cancelamento | Em desenvolvimento |
+| Status de Execução | WhatsApp + URA | Dia da visita (deslocamento, atraso, conclusão) | Em refinamento técnico |
+| Vocalização URA | URA | Cliente liga sobre pendência ou status | Em produção, +1,3pp retenção apurada |
+| Confirmação no App | App | Tela inicial pós-compra | Em desenvolvimento |
+
+Algumas observações importantes sobre como esse mapa foi construído:
+
+A régua de **Gestão de Pendência** rodou como piloto geográfico. Subiu primeiro na Bahia e em Santa Catarina, com as outras UFs como controle natural. Em abril, as UFs do piloto estavam 1pp acima da média; na parcial de maio, o delta abriu para 8pp. Só depois desse sinal claro de impacto é que o rollout pra outras UFs entrou em planejamento.
+
+A **vocalização na URA** atacou um cenário que historicamente ia 100% pra atendente humano: cliente liga sobre pendência técnica, área de risco ou cancelamento. Estruturei a vocalização desses cenários (informar o cliente do status sem transferir), e o resultado de maio mostrou que aproximadamente metade dos clientes que caem nessas situações se contém na URA — ouvem a informação, abandonam satisfeitos, e não geram atendimento humano. Cenário que parecia impossível de digitalizar respondeu a comunicação bem estruturada.
+
+> Confirmação não é uma régua. É o primeiro nó de um sistema. Cada novo nó cobre uma janela da jornada que antes ficava sem comunicação ativa.
+
+## Resultados consolidados
+
+**Experiência do cliente:**
+
+- Confirmação de visita: <span class="font-mono text-accent">55,6% → 67,9%</span> (+12,3pp)
+- Eficácia da comunicação (leu + interagiu + confirmou): 52,6% → 65,3%
+
+**Operação:**
+
+- Casa Fechada como motivo de cancelamento: <span class="font-mono text-accent">4,6% → 1,7%</span> (-63%)
+- Redução da operação humana receptiva por voz: -24% apurado
+
+**Negócio:**
+
+- Redução no cancelamento de vendas atribuída especificamente às duas linhas de Confirmação (régua original + disparo no 2º número): -2,5pp
+
+## Próximos passos
+
+Uma nova versão da régua de Confirmação, com três disparos em cadência diferente (24h, 18h e 4h antes do agendamento), está em desenvolvimento. Uma primeira tentativa de rollout em maio foi revertida após identificarmos um erro na regra de disparo no MKT Cloud — a estabilidade da régua atual em produção foi preservada enquanto o ajuste é feito. Re-entrega prevista pra fim de maio.
+
+## Time
+
+PM de Onboarding, Especialista de Jornada de Onboarding, e eu como Lead Product Designer compomos o núcleo de design e produto da iniciativa, com apoio dos times de Plataforma Conversacional (WhatsApp e URA), CRM (Marketing Cloud), e Desenvolvimento (Salesforce e App).
+

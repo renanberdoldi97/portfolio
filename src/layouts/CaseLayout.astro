@@ -1,0 +1,58 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import CaseStepper from '../components/CaseStepper.astro';
+import Divider from '../components/Divider.astro';
+import Lightbox from '../components/Lightbox.astro';
+
+interface Props {
+  title: string;
+  shortTitle?: string;
+  description: string;
+}
+
+const { title, shortTitle, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <CaseStepper />
+
+  <!-- Breadcrumb — max-w-4xl, alinhado com o header "Renan Berdoldi" -->
+  <div class="mx-auto max-w-4xl px-6 pt-8 pb-14">
+    <nav class="breadcrumb" aria-label="Navegação estrutural">
+      <a href="/">Home</a>
+      <span class="breadcrumb-sep" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;"><polyline points="9 18 15 12 9 6"/></svg></span>
+      <a href="/#trabalho">Cases</a>
+      <span class="breadcrumb-sep" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;"><polyline points="9 18 15 12 9 6"/></svg></span>
+      <span>{shortTitle ?? title}</span>
+    </nav>
+  </div>
+
+  <article class="mx-auto max-w-3xl px-6 pt-0 pb-16">
+
+    <header class="mb-12">
+      <h1
+        class="mb-4 font-display font-normal leading-[1.05] tracking-[-0.02em] text-primary"
+        style="font-size: clamp(2.25rem, 4vw, 3rem)"
+      >
+        {title}
+      </h1>
+      <p class="text-lg leading-relaxed text-muted">{description}</p>
+    </header>
+
+    <div class="case-body">
+      <slot />
+    </div>
+
+    <footer class="mt-16">
+      <Divider />
+      <div class="pt-8">
+        <a href="/#trabalho" class="btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:6px;"><polyline points="15 18 9 12 15 6"/></svg> Voltar para cases
+        </a>
+      </div>
+    </footer>
+  </article>
+
+  <Lightbox />
+</BaseLayout>
+

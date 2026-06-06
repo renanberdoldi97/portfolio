@@ -1,0 +1,102 @@
+---
+title: "Barreira contra pedidos duplicados"
+shortTitle: "Duplicidade"
+description: "Como identifiquei um problema silencioso que inflava cancelamentos e desenhei uma barreira inteligente que derrubou a taxa de duplicidade de 3,5% pra 0,4% em três canais."
+subtitle: "Como eliminamos pedidos duplicados com uma barreira de design aplicada em três canais"
+role: "Lead Product Designer · Onboarding · Nio Internet · 2025–2026"
+date: "2024-03-01"
+tags: ["Vendas", "Multicanal", "Discovery"]
+draft: false
+metric: "−2,9pp"
+metricLabel: "cancelamento de vendas"
+caseNumber: "03"
+---
+
+`-2,9pp` no cancelamento de vendas. Taxa de duplicidade de `3,5%` pra `0,4%`. Três canais. Uma barreira que não existia — identificada, desenhada e implementada sem PM, com rollout sequencial por volume.
+
+---
+
+## Contexto
+
+Na Nio, entre o momento em que o cliente compra o plano e a internet ser instalada, existe uma janela de dias — às vezes semanas. Nesse intervalo, o cliente não tem visibilidade clara do status do pedido. E quando não tem visibilidade, faz o que qualquer pessoa faria: tenta de novo.
+
+Isso gerava dois tipos de problema. O primeiro era a duplicidade propriamente dita: o cliente com instalação pendente entrava no site e fazia um novo pedido pro mesmo CPF. Às vezes pro mesmo endereço, às vezes pra outro. O segundo era a recompra: o cliente que já tinha fibra instalada consultava o mesmo endereço e iniciava uma nova compra sem perceber que já era cliente ativo.
+
+Nos dois casos, o pedido duplicado entrava no funil como venda legítima. Ocupava slot de técnico, gerava OS, consumia operação — e inevitavelmente era cancelado quando alguém percebia a sobreposição. Cada duplicidade que virava cancelamento inflava a taxa de cancelamento de vendas sem representar churn real. Era ruído operacional disfarçado de indicador de negócio.
+
+## O ponto de partida
+
+O problema não veio de uma demanda do time ou de um OKR. Veio de observação. Acompanhávamos um dashboard de duplicidade que mostrava a taxa subindo mês a mês — de 2,4% em setembro/25 pra 3,5% em janeiro/26. A tendência era clara: quanto mais o volume de vendas crescia, mais duplicidade entrava junto.
+
+Eu e a Especialista de Jornada de Onboarding decidimos investigar. Não havia PM designado pra isso — não era uma iniciativa priorizada formalmente. Era um problema visível que ninguém estava endereçando.
+
+Olhando os dados por canal, ficou evidente que o bot do WhatsApp era o mais exposto: 5,8% de taxa de duplicidade, contra 2,5% do site e 1,6% do portal de vendas. Fazia sentido — o bot não tinha nenhuma verificação de pedido existente antes de iniciar o fluxo de compra.
+
+## A hipótese
+
+Se inserirmos uma verificação de CPF no início do fluxo de compra — antes do cliente avançar — e mostrarmos que ele já tem um pedido ativo, a maioria vai parar ali. Não porque bloqueamos, mas porque informamos. O cliente não quer duplicar; ele quer saber o que está acontecendo com o pedido que já fez.
+
+A barreira tinha que fazer duas coisas: impedir a duplicidade e redirecionar pro acompanhamento. Se o cliente só visse "você já tem um pedido" sem saber o que fazer, ia ligar pro call center — trocando um problema por outro.
+
+## O que desenhei
+
+A solução é uma tela de interceptação que aparece logo após o cliente inserir o CPF, em qualquer canal de venda. Se o sistema identifica um pedido ativo pra aquele CPF, o fluxo de compra é interrompido e o cliente vê:
+
+- Confirmação de que já existe um pedido em andamento
+- Indicação do status atual (agendado, pendente, em execução)
+- Direcionamento pro tracking no app da Nio ou pro WhatsApp pra acompanhamento rápido
+
+Não é um bloqueio técnico. É uma barreira de design: informação + redirecionamento. O cliente entende o que está acontecendo e sabe onde acompanhar. Se quiser insistir, o caminho pro atendimento continua aberto — mas a maioria não precisa.
+
+[Inserir aqui: tela de duplicidade no site e mensagem equivalente no bot do WhatsApp]
+
+A lógica é a mesma nos três canais — site, portal de vendas e bot — mas a implementação visual se adapta ao contexto de cada um. No site, é uma tela com layout completo. No bot, é uma mensagem com botões de ação.
+
+## Rollout por canal
+
+Priorizamos por volume. O site concentrava o maior número absoluto de vendas, então foi o primeiro:
+
+| Canal | Deploy | Antes | Depois |
+|---|---|---|---|
+| Site | Jan/26 | 2,5% | 0,1% |
+| Portal | Mar/26 | 1,6% | 0,4% |
+| Bot | Mar/26 | 5,8% | 0,3% |
+
+O intervalo entre canais foi intencional. O site serviu como validação: se a barreira funcionasse ali sem efeitos colaterais (falsos positivos, reclamações, queda de conversão legítima), replicávamos nos outros. Funcionou. Portal e bot entraram em sequência no mês seguinte.
+
+## Resultados
+
+A taxa geral de duplicidade caiu de `3,5%` em janeiro/26 pra `0,4%` em abril/26 — e se manteve em `0,4%` em maio. Queda de quase 90%.
+
+O impacto direto no cancelamento de vendas foi de `-2,9pp`. Cada pedido duplicado que deixou de entrar no funil é um cancelamento que deixou de existir — não porque retemos melhor, mas porque o problema nunca chega a se formar.
+
+| Mês | Taxa de duplicidade |
+|---|---|
+| Set/25 | 2,4% |
+| Out/25 | 3,1% |
+| Nov/25 | 1,8% |
+| Dez/25 | 2,1% |
+| Jan/26 | 3,5% |
+| Fev/26 | 3,3% |
+| Mar/26 | 1,9% |
+| Abr/26 | 0,4% |
+| Mai/26 | 0,4% |
+
+## O que o número não conta
+
+2,9pp de cancelamento a menos parece modesto isoladamente. Mas cancelamento de vendas na Nio é um indicador vigiado de perto — cada ponto percentual representa volume real de operação desperdiçada: técnicos agendados pra pedidos que vão ser cancelados, slots de instalação ocupados por fantasmas, atendentes processando cancelamentos que não deveriam existir.
+
+A duplicidade era o tipo de problema que todo mundo sabia que existia mas ninguém priorizava formalmente. Não tinha PM alocado, não estava em OKR, não era meta de ninguém. A iniciativa aconteceu porque eu e a Especialista de Jornada olhamos o dado, dimensionamos o impacto e decidimos resolver.
+
+Isso talvez seja o mais importante do case: não é sobre a tela que desenhei. É sobre ter identificado que o problema existia, ter convencido que valia resolver, e ter executado o rollout em três canais sem esperar que alguém colocasse na fila.
+
+## Próximos passos
+
+A barreira de duplicidade está estável nos três canais. O monitoramento continua ativo — a taxa de 0,4% residual provavelmente representa edge cases legítimos (mudança de endereço real, upgrade de plano) que a lógica atual não diferencia.
+
+A evolução natural é refinar a detecção pra distinguir duplicidade real de recompra legítima, evitando que a barreira apareça quando o cliente tem motivo válido pra um segundo pedido.
+
+## Time
+
+Eu como Lead Product Designer e a Especialista de Jornada de Onboarding lideramos a iniciativa de ponta a ponta — identificação, design, alinhamento com desenvolvimento e rollout. Sem PM designado; a priorização e o acompanhamento foram nossos.
+

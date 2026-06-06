@@ -1,0 +1,105 @@
+---
+---
+
+<div id="cursor-orbit" aria-hidden="true">
+  <svg viewBox="0 0 80 80" width="80" height="80">
+    <defs>
+      <path id="orbit-path" d="M 8,40 a 32,32 0 1,0 64,0 a 32,32 0 1,0 -64,0"/>
+    </defs>
+    <g id="orbit-text-group">
+      <text>
+        <textPath href="#orbit-path" startOffset="0%">RENAN BERDOLDI · RENAN BERDOLDI · </textPath>
+      </text>
+      <animateTransform
+        attributeName="transform"
+        attributeType="XML"
+        type="rotate"
+        from="0 40 40"
+        to="360 40 40"
+        dur="20s"
+        repeatCount="indefinite"
+      />
+    </g>
+  </svg>
+</div>
+
+<style>
+  #cursor-orbit {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 80px;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 150ms ease;
+    will-change: transform;
+  }
+
+  #cursor-orbit.is-active {
+    opacity: 1;
+  }
+
+  body.orbit-hidden #cursor-orbit {
+    opacity: 0 !important;
+  }
+
+  #cursor-orbit text {
+    font-size: 9px;
+    font-family: 'Geist Mono Variable', ui-monospace, monospace;
+    fill: var(--color-text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  @media (pointer: coarse) {
+    #cursor-orbit {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Stop entirely on touch devices — no pointer, no RAF
+  if (!window.matchMedia('(pointer: coarse)').matches) {
+    const orbit = document.getElementById('cursor-orbit');
+
+    if (orbit) {
+      let cx = -200, cy = -200, mx = -200, my = -200;
+
+      function lerp(a: number, b: number, t: number) {
+        return a + (b - a) * t;
+      }
+
+      function tick() {
+        cx = lerp(cx, mx, 0.15);
+        cy = lerp(cy, my, 0.15);
+        orbit.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
+        requestAnimationFrame(tick);
+      }
+
+      document.addEventListener('mousemove', e => {
+        mx = e.clientX;
+        my = e.clientY;
+        orbit.classList.add('is-active');
+      });
+
+      document.addEventListener('mouseleave', () => {
+        orbit.classList.remove('is-active');
+      });
+
+      document.addEventListener('mouseover', e => {
+        const target = e.target as Element;
+        if (target.closest('a, button')) {
+          document.body.classList.add('orbit-hidden');
+        } else {
+          document.body.classList.remove('orbit-hidden');
+        }
+      });
+
+      requestAnimationFrame(tick);
+    }
+  }
+</script>
+
